@@ -1,18 +1,21 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'react-native-paper-otp-input';
+import { StyleSheet, View } from 'react-native';
+import { ScrollView } from 'react-native';
+import { PaperOtpInput } from 'react-native-paper-otp-input';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
-
-  React.useEffect(() => {
-    multiply(3, 7).then(setResult);
-  }, []);
-
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <PaperOtpInput
+          autoFocus={false}
+          onPinReady={(pin) => {
+            console.log('Pin is ready:', pin);
+          }}
+          maxLength={4}
+        />
+      </ScrollView>
     </View>
   );
 }
@@ -23,9 +26,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+  scrollViewContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
   },
 });

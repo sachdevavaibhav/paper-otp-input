@@ -5,18 +5,31 @@ import {
   Pressable,
   TextInput as RNTextInput,
 } from 'react-native';
+import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
 
 type OtpInputProps = {
   maxLength: number;
   autoFocus?: boolean;
   onPinReady?: (pin: string) => void;
+  containerStyle?: StyleProp<ViewStyle>;
+  otpContainerStyle?: StyleProp<ViewStyle>;
+  otpBoxStyle?: StyleProp<ViewStyle>;
+  otpTextStyle?: StyleProp<TextStyle>;
+  otpBorderColor?: string;
+  otpBorderFocusedColor?: string;
 };
 
 export default function OtpInput({
   maxLength,
   onPinReady,
   autoFocus = true,
+  containerStyle,
+  otpContainerStyle,
+  otpBoxStyle,
+  otpTextStyle,
+  otpBorderColor = '#F6F6F6',
+  otpBorderFocusedColor = '#6200EE',
 }: OtpInputProps) {
   const [isInputBoxFocused, setIsInputBoxFocused] = React.useState(autoFocus);
   const [otp, setOtp] = React.useState('');
@@ -46,7 +59,7 @@ export default function OtpInput({
     setIsInputBoxFocused(false);
   };
   return (
-    <View style={styles.container}>
+    <View style={containerStyle ? containerStyle : styles.container}>
       <TextInput
         mode="outlined"
         style={styles.textInput}
@@ -61,7 +74,10 @@ export default function OtpInput({
         keyboardType="numeric"
         autoFocus={autoFocus}
       />
-      <Pressable style={styles.otpContainer} onPress={handleOnPress}>
+      <Pressable
+        style={otpContainerStyle ? otpContainerStyle : styles.otpContainer}
+        onPress={handleOnPress}
+      >
         {boxArray.map((_, index) => {
           const isCurrentValue = index === otp.length;
           const isLastValue = index === maxLength - 1;
@@ -69,16 +85,25 @@ export default function OtpInput({
 
           const isValueFocused =
             isCurrentValue || (isLastValue && isCodeComplete);
+
+          const otpBoxStyleObject = otpBoxStyle
+            ? (otpBoxStyle as ViewStyle)
+            : styles.otpBox;
+
           return (
             <View
               key={index}
               style={{
-                ...styles.otpBox,
+                ...otpBoxStyleObject,
                 borderColor:
-                  isInputBoxFocused && isValueFocused ? '#6200EE' : '#F6F6F6',
+                  isInputBoxFocused && isValueFocused
+                    ? otpBorderFocusedColor
+                    : otpBorderColor,
               }}
             >
-              <Text style={styles.otpText}>{otp[index] || ''}</Text>
+              <Text style={otpTextStyle ? otpTextStyle : styles.otpText}>
+                {otp[index] || ''}
+              </Text>
             </View>
           );
         })}

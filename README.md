@@ -11,11 +11,17 @@ npm install react-native-paper-otp-input
 ## Usage
 
 ```js
-import { multiply } from 'react-native-paper-otp-input';
+import { PaperOtpInput } from 'react-native-paper-otp-input';
 
-// ...
-
-const result = await multiply(3, 7);
+// You need to wrap it around scroll view for input blur to
+//work properly
+<PaperOtpInput
+  autoFocus={false}
+  onPinReady={(pin) => {
+    console.log('Do something when the pin is ready');
+  }}
+  maxLength={4}
+/>;
 ```
 
 ## Contributing

@@ -37,7 +37,14 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "react-native-paper",
+    "otp",
+    "otp-input",
+    "otp-input-react-native",
+    "react-native-paper-otp-input",
+    "otp-input-react-native-paper",
+    "otp component"
   ],
   "repository": {
     "type": "git",

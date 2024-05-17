@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import type { StyleProp, ViewStyle, TextStyle } from 'react-native';
 import { TextInput, Text } from 'react-native-paper';
+import type { TextInputProps } from 'react-native-paper';
 
 type OtpInputProps = {
   maxLength: number;
@@ -18,6 +19,7 @@ type OtpInputProps = {
   otpTextStyle?: StyleProp<TextStyle>;
   otpBorderColor?: string;
   otpBorderFocusedColor?: string;
+  textInputProps?: TextInputProps;
 };
 
 export default function OtpInput({
@@ -30,6 +32,7 @@ export default function OtpInput({
   otpTextStyle,
   otpBorderColor = '#F6F6F6',
   otpBorderFocusedColor = '#6200EE',
+  textInputProps,
 }: OtpInputProps) {
   const [isInputBoxFocused, setIsInputBoxFocused] = React.useState(autoFocus);
   const [otp, setOtp] = React.useState('');
@@ -58,11 +61,31 @@ export default function OtpInput({
   const handleOnBlur = () => {
     setIsInputBoxFocused(false);
   };
+
+  const containerStyleObject = StyleSheet.flatten([
+    defaultStyles.container,
+    containerStyle,
+  ]);
+
+  const otpContainerStylesObject = StyleSheet.flatten([
+    defaultStyles.otpContainer,
+    otpContainerStyle,
+  ]);
+
+  const otpBoxStyleObject = StyleSheet.flatten([
+    defaultStyles.otpBox,
+    otpBoxStyle,
+  ]);
+
+  const otpTextStyleObject = StyleSheet.flatten([
+    defaultStyles.otpText,
+    otpTextStyle,
+  ]);
   return (
-    <View style={containerStyle ? containerStyle : styles.container}>
+    <View style={containerStyleObject}>
       <TextInput
         mode="outlined"
-        style={styles.textInput}
+        style={defaultStyles.textInput}
         theme={{
           roundness: 10,
         }}
@@ -73,11 +96,9 @@ export default function OtpInput({
         onBlur={handleOnBlur}
         keyboardType="numeric"
         autoFocus={autoFocus}
+        {...textInputProps}
       />
-      <Pressable
-        style={otpContainerStyle ? otpContainerStyle : styles.otpContainer}
-        onPress={handleOnPress}
-      >
+      <Pressable style={otpContainerStylesObject} onPress={handleOnPress}>
         {boxArray.map((_, index) => {
           const isCurrentValue = index === otp.length;
           const isLastValue = index === maxLength - 1;
@@ -85,10 +106,6 @@ export default function OtpInput({
 
           const isValueFocused =
             isCurrentValue || (isLastValue && isCodeComplete);
-
-          const otpBoxStyleObject = otpBoxStyle
-            ? (otpBoxStyle as ViewStyle)
-            : styles.otpBox;
 
           return (
             <View
@@ -101,9 +118,7 @@ export default function OtpInput({
                     : otpBorderColor,
               }}
             >
-              <Text style={otpTextStyle ? otpTextStyle : styles.otpText}>
-                {otp[index] || ''}
-              </Text>
+              <Text style={otpTextStyleObject}>{otp[index] || ''}</Text>
             </View>
           );
         })}
@@ -112,7 +127,7 @@ export default function OtpInput({
   );
 }
 
-const styles = StyleSheet.create({
+const defaultStyles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',

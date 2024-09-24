@@ -12,7 +12,7 @@ import type { TextInputProps } from 'react-native-paper';
 type OtpInputProps = {
   maxLength: number;
   autoFocus?: boolean;
-  onPinReady?: (pin: string) => void;
+  onPinChange?: (pin: string) => void;
   containerStyle?: StyleProp<ViewStyle>;
   otpContainerStyle?: StyleProp<ViewStyle>;
   otpBoxStyle?: StyleProp<ViewStyle>;
@@ -24,7 +24,7 @@ type OtpInputProps = {
 
 export default function OtpInput({
   maxLength,
-  onPinReady,
+  onPinChange,
   autoFocus = true,
   containerStyle,
   otpContainerStyle,
@@ -37,34 +37,17 @@ export default function OtpInput({
   const [isInputBoxFocused, setIsInputBoxFocused] =
     React.useState<boolean>(autoFocus);
   const [otp, setOtp] = React.useState<string>('');
-  const [isPinReady, setIsPinReady] = React.useState<boolean>(false);
   const ref = React.useRef<RNTextInput>(null);
-  const pinReadyCalledRef = React.useRef<boolean>(false);
 
-  const handlePinReady = React.useCallback(
+  const handlePinChange = React.useCallback(
     (pin: string) => {
-      if (onPinReady) {
-        onPinReady(pin);
+      setOtp(pin);
+      if (onPinChange) {
+        onPinChange(pin);
       }
     },
-    [onPinReady]
+    [onPinChange]
   );
-
-  React.useEffect(() => {
-    if (otp.length === maxLength) {
-      setIsPinReady(true);
-    } else {
-      setIsPinReady(false);
-      pinReadyCalledRef.current = false;
-    }
-  }, [maxLength, otp, setIsPinReady]);
-
-  React.useEffect(() => {
-    if (isPinReady && !pinReadyCalledRef.current) {
-      handlePinReady(otp);
-      pinReadyCalledRef.current = true;
-    }
-  }, [isPinReady, onPinReady, otp, handlePinReady]);
 
   const boxArray = new Array(maxLength).fill(0);
   const handleOnPress = () => {
@@ -104,7 +87,7 @@ export default function OtpInput({
           roundness: 10,
         }}
         value={otp}
-        onChangeText={setOtp}
+        onChangeText={handlePinChange}
         maxLength={maxLength}
         ref={ref}
         onBlur={handleOnBlur}

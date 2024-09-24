@@ -25,7 +25,7 @@ import { PaperOtpInput } from 'react-native-paper-otp-input';
 //work properly
 <PaperOtpInput
   maxLength={4}
-  onPinReady={(pin) => {
+  onPinChange={(pin) => {
     console.log('Pin is ready:', pin);
   }}
 />;

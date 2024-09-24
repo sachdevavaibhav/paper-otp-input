@@ -10,7 +10,7 @@ export default function App() {
       <ScrollView contentContainerStyle={styles.scrollViewContainer}>
         <PaperOtpInput
           autoFocus={false}
-          onPinReady={(pin) => {
+          onPinChange={(pin) => {
             console.log('Pin is ready:', pin);
           }}
           maxLength={4}

@@ -34,23 +34,37 @@ export default function OtpInput({
   otpBorderFocusedColor = '#6200EE',
   textInputProps,
 }: OtpInputProps) {
-  const [isInputBoxFocused, setIsInputBoxFocused] = React.useState(autoFocus);
-  const [otp, setOtp] = React.useState('');
-  const [isPinReady, setIsPinReady] = React.useState(false);
+  const [isInputBoxFocused, setIsInputBoxFocused] =
+    React.useState<boolean>(autoFocus);
+  const [otp, setOtp] = React.useState<string>('');
+  const [isPinReady, setIsPinReady] = React.useState<boolean>(false);
   const ref = React.useRef<RNTextInput>(null);
+  const pinReadyCalledRef = React.useRef<boolean>(false);
+
+  const handlePinReady = React.useCallback(
+    (pin: string) => {
+      if (onPinReady) {
+        onPinReady(pin);
+      }
+    },
+    [onPinReady]
+  );
 
   React.useEffect(() => {
-    setIsPinReady(otp.length === maxLength);
-    return () => {
+    if (otp.length === maxLength) {
+      setIsPinReady(true);
+    } else {
       setIsPinReady(false);
-    };
+      pinReadyCalledRef.current = false;
+    }
   }, [maxLength, otp, setIsPinReady]);
 
   React.useEffect(() => {
-    if (isPinReady) {
-      onPinReady && onPinReady(otp);
+    if (isPinReady && !pinReadyCalledRef.current) {
+      handlePinReady(otp);
+      pinReadyCalledRef.current = true;
     }
-  }, [isPinReady, onPinReady, otp]);
+  }, [isPinReady, onPinReady, otp, handlePinReady]);
 
   const boxArray = new Array(maxLength).fill(0);
   const handleOnPress = () => {
